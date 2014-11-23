@@ -9,7 +9,7 @@ This class describes diluted square lattice withe periodic boundary conditions.
 
 import sys
 import traceback
-
+import xml.dom.minidom
 
 
 from xml.etree import ElementTree
@@ -81,14 +81,14 @@ class DilutedSquare:
 
         n1_tx, n1_ty = nx + 1, ny
 
-        if n1_tx >= Nx:
+        if n1_tx >= self.Nx:
           n1_tx = 0
 
         n1_i = self.xy2i(n1_tx, n1_ty, Nx)
 
         n2_tx, n2_ty = nx, ny + 1
 
-        if n2_ty >= Ny:
+        if n2_ty >= self.Ny:
           n2_ty = 0
 
         n2_i = self.xy2i(n2_tx, n2_ty, Nx)
@@ -100,19 +100,20 @@ class DilutedSquare:
 
         edge_ind += 1
 
-    vertex_ind = Nx * Ny
+    vertex_ind = self.Nx * self.Ny
 
     # edges that stick out of the square lattice
-    for nx in range(Nx):
-      for ny in range(Ny):
-        i = self.xy2i(nx, ny, Nx)
+
+    for nx in range(self.Nx):
+      for ny in range(self.Ny):
+        i = self.xy2i(nx, ny, self.Nx)
         if random.random() <= self.dilution:
-          v = ElementTree.SubElement(self.root, "VERTEX", attrib={"id": str(i), 'type': "1"})
+          v = ElementTree.SubElement(self.root, "VERTEX", attrib={"id": str(vertex_ind), 'type': "1"})
           c = ElementTree.SubElement(v, "COORDINATE")
           c.text = "{nx} {ny}".format(nx=nx, ny=ny)
-          vertex_ind += 1
 
-          ElementTree.SubElement(self.root, "EDGE", attrib={"id": str(edge_ind), 'type': "0", "source": str(i), "target": str(vertex_ind)})
+          ElementTree.SubElement(self.root, "EDGE", attrib={"id": str(edge_ind), 'type': "1", "source": str(i), "target": str(vertex_ind)})
+          vertex_ind += 1
           edge_ind += 1
 
   def __str__(self):
@@ -142,10 +143,4 @@ class DilutedSquare:
           if int(item.attrib["type"]) == tp:
             num_vertices += 1
     return num_vertices
-  def __len__(self):
-    '''
 
-    :return: sum of edges and vertices.
-    '''
-    return len(self.root)
-#
