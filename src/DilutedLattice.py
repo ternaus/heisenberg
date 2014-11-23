@@ -9,8 +9,7 @@ This class describes diluted square lattice withe periodic boundary conditions.
 
 import sys
 import traceback
-import xml.dom.minidom
-
+from xml.dom import minidom
 
 from xml.etree import ElementTree
 
@@ -117,7 +116,8 @@ class DilutedSquare:
           edge_ind += 1
 
   def __str__(self):
-    return str(ElementTree.dump(self.root))
+    reparsed = minidom.parseString(ElementTree.tostring(self.root))
+    return reparsed.toprettyxml(indent="  ")    
 
   def xy2i(self, x, y, Nx):
     return y * Nx + x + 1
@@ -144,3 +144,21 @@ class DilutedSquare:
             num_vertices += 1
     return num_vertices
 
+  def tofile(self, file_name):
+    file_handle = open(file_name, "w")
+    self.root.writexml(file_handle)
+    file_handle.close()
+
+
+if __name__ == "__main__":
+  import argparse
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-nx', type=int, help="number of sites in x direction")
+  parser.add_argument('-ny', type=int, help="number of sites in y direction")
+  parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
+  parser.add_argument('-file', type=str, help="outputfile")
+
+  args = parser.parse_args(sys.argv[1:])
+
+  ds = DilutedSquare(Nx=args.nx, Ny=args.ny, dilution=args.dilution)
+  ds.tofile(args.file)
