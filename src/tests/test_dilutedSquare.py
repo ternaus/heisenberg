@@ -10,7 +10,6 @@ class TestDilutedSquare(TestCase):
     Ny = 1
     dilution = 0
     ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
-    print ds
     self.assertEquals(2, ds.num_edges())
     self.assertEquals(2, ds.num_edges(0))
     self.assertEquals(1, ds.num_vertices(0))
@@ -29,7 +28,6 @@ class TestDilutedSquare(TestCase):
     Ny = 4
     dilution = 1
     ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
-    print ds
     self.assertEquals(Nx * Ny * 3, ds.num_edges())
     self.assertEquals(Nx * Ny * 2, ds.num_edges(0))
     self.assertEquals(Nx * Ny, ds.num_edges(1))

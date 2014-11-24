@@ -76,7 +76,7 @@ class DilutedSquare:
         i = self.xy2i(nx, ny, self.Nx)
         v = ElementTree.SubElement(self.root, "VERTEX", attrib={"id": str(i), 'type': "0"})
         c = ElementTree.SubElement(v, "COORDINATE")
-        c.text = "{nx} {ny}".format(nx=nx, ny=ny)
+        c.text = "{nx} {ny} {nz}".format(nx=nx, ny=ny, nz=0)
 
         n1_tx, n1_ty = nx + 1, ny
 
@@ -109,7 +109,7 @@ class DilutedSquare:
         if random.random() <= self.dilution:
           v = ElementTree.SubElement(self.root, "VERTEX", attrib={"id": str(vertex_ind), 'type': "1"})
           c = ElementTree.SubElement(v, "COORDINATE")
-          c.text = "{nx} {ny}".format(nx=nx, ny=ny)
+          c.text = "{nx} {ny} {nz}".format(nx=nx, ny=ny, nz=-1)
 
           ElementTree.SubElement(self.root, "EDGE", attrib={"id": str(edge_ind), 'type': "1", "source": str(i), "target": str(vertex_ind)})
           vertex_ind += 1
@@ -146,7 +146,7 @@ class DilutedSquare:
 
   def tofile(self, file_name):
     file_handle = open(file_name, "w")
-    self.root.writexml(file_handle)
+    print >> file_handle, self.__str__()
     file_handle.close()
 
 
