@@ -5,6 +5,7 @@ from src import DilutedLattice
 __author__ = 'vladimir'
 
 class TestDilutedSquare(TestCase):
+
   def test_1site_d0(self):
     Nx = 1
     Ny = 1
@@ -34,3 +35,13 @@ class TestDilutedSquare(TestCase):
     self.assertEquals(Nx * Ny, ds.num_vertices(0))
     self.assertEquals(Nx * Ny, ds.num_vertices(1))
 
+  def test_xy2i(self):
+    Nx = 3
+    Ny = 3
+
+    dilution = 0
+    ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
+    self.assertEquals(1, ds.xy2i(0, 0, Nx))
+    self.assertEquals(2, ds.xy2i(1, 0, Nx))
+    self.assertEquals(3, ds.xy2i(2, 0, Nx))
+    self.assertEquals(4, ds.xy2i(0, 1, Nx))

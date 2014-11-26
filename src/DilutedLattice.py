@@ -68,7 +68,8 @@ class DilutedSquare:
         exit(3)
 
 
-    self.root = ElementTree.Element("GRAPH")
+    self.lattices = ElementTree.Element("LATTICES")
+    self.root = ElementTree.SubElement(self.lattices, "GRAPH")
 
     edge_ind = 1
     for nx in range(self.Nx):
@@ -83,23 +84,23 @@ class DilutedSquare:
         if n1_tx >= self.Nx:
           n1_tx = 0
 
-        n1_i = self.xy2i(n1_tx, n1_ty, Nx)
+        n1_i = self.xy2i(n1_tx, n1_ty, self.Nx)
 
         n2_tx, n2_ty = nx, ny + 1
 
         if n2_ty >= self.Ny:
           n2_ty = 0
 
-        n2_i = self.xy2i(n2_tx, n2_ty, Nx)
-
+        n2_i = self.xy2i(n2_tx, n2_ty, self.Nx)
 
         ElementTree.SubElement(self.root, "EDGE", attrib={"id": str(edge_ind), 'type': "0", "source": str(i), "target": str(n1_i)})
+        edge_ind += 1
 
         ElementTree.SubElement(self.root, "EDGE", attrib={"id": str(edge_ind), 'type': "0", "source": str(i), "target": str(n2_i)})
 
         edge_ind += 1
 
-    vertex_ind = self.Nx * self.Ny
+    vertex_ind = self.Nx * self.Ny + 1
 
     # edges that stick out of the square lattice
 
@@ -115,9 +116,16 @@ class DilutedSquare:
           vertex_ind += 1
           edge_ind += 1
 
+    self.root.set('vertices', str(vertex_ind - 1))
+    self.root.set('edges', str(edge_ind - 1))
+    self.root.set('name', "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=self.Nx, Ny=self.Ny, dilution=self.dilution))
+
   def __str__(self):
-    reparsed = minidom.parseString(ElementTree.tostring(self.root))
-    return reparsed.toprettyxml(indent="  ")    
+    return ElementTree.tostring(self.lattices)
+
+  def pretty(self):
+    reparsed = minidom.parseString(ElementTree.tostring(self.lattices))
+    return reparsed.toprettyxml(indent="  ")
 
   def xy2i(self, x, y, Nx):
     return y * Nx + x + 1
