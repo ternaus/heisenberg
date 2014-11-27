@@ -17,9 +17,33 @@ import data2xml
 
 parms = []
 
-Nx = 4
-Ny = 4
-dilution = 1
+
+if __name__ == "__main__":
+  Nx = 4
+  Ny = 4
+  dilution = 1
+  beta_list = [1]
+  J = -1
+  J1 = -1
+  beta = 1
+else:
+  import argparse
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-nx', type=int, help="number of sites in x direction")
+  parser.add_argument('-ny', type=int, help="number of sites in y direction")
+  parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
+  parser.add_argument('-beta', type=float, help="inverse temperature")
+  parser.add_argument('-J', type=float, default = -1, help="coupling strength")
+  parser.add_argument('-J1', type=float, default = -1, help="coupling in the z direction")
+
+  args = parser.parse_args(sys.argv[1:])
+
+  Nx = args.nx
+  Ny = args.ny
+  dilution = args.dilution
+  J = args.J
+  J1 = args.J1
+
 
 #Save lattice to file
 ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
@@ -29,7 +53,6 @@ f = open(lattice_name + ".xml", 'w')
 print >> f, ds
 f.close()
 
-# beta_list = [2**tx for tx in range(10)]
 beta_list = [1]
 J = -1
 J1 = -1
