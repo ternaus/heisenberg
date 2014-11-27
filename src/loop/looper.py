@@ -13,11 +13,12 @@ import os
 sys.path += [os.path.join(os.getcwd(), '..')]
 
 import DilutedLattice
+import data2xml
 
 parms = []
 
-Nx = 8
-Ny = 8
+Nx = 4
+Ny = 4
 dilution = 1
 
 #Save lattice to file
@@ -30,44 +31,48 @@ f.close()
 
 # beta_list = [2**tx for tx in range(10)]
 beta_list = [1]
-for beta in beta_list:
-    parms.append(
-        { 
-          'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
-          'LATTICE_LIBRARY' : lattice_name + ".xml",
-          'MODEL'          : "spin",
-          'local_S'        : 0.5,
-          'T'              : 1 / beta,
-          'J'              : -1,
-          'J1'             : -1,
-          'THERMALIZATION' : 5000,
-          'SWEEPS'         : 50000,
-          # 'L'              : 60,
-          'ALGORITHM'      : "loop"
-        }
-    )
+J = -1
+J1 = -1
+beta = 1
+
+parms.append(
+    {
+      'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
+      'LATTICE_LIBRARY' : lattice_name + ".xml",
+      'MODEL_LIBRARY' : os.path.join("..", "heisenberg.xml"),
+      'MODEL'          : "heisenberg",
+      'local_S'        : 0.5,
+      'T'              : 1 / beta,
+      'J'              : J,
+      'J1'             : J1,
+      'THERMALIZATION' : 5000,
+      'SWEEPS'         : 50000,
+      # 'L'              : 60,
+      'ALGORITHM'      : "loop"
+    }
+)
 
 #write the input file and run the simulation
-results = "results"
+temp = "temp"
+try:
+  os.mkdir(temp)
+except:
+  pass
+
+
+input_file = pyalps.writeInputFiles(os.path.join(temp, lattice_name), parms)
+pyalps.runApplication('loop', input_file, writexml=True)
+
+#load the susceptibility and collect it as function of temperature T
+data = pyalps.loadMeasurements(pyalps.getResultFiles(prefix=lattice_name))
+d_xml = data2xml.DataToXML(data=data)
+results = 'results'
+
 try:
   os.mkdir(results)
 except:
   pass
 
+file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
+d_xml.tofile(file_name)
 
-input_file = pyalps.writeInputFiles(os.path.join(results, lattice_name), parms)
-pyalps.runApplication('loop', input_file, writexml=True)
-
-#load the susceptibility and collect it as function of temperature T
-data = pyalps.loadMeasurements(pyalps.getResultFiles(prefix=lattice_name))
-print data
-susceptibility = pyalps.collectXY(data,x='T',y='Susceptibility')
-print susceptibility
-# #make plot
-# plt.figure()
-# pyalps.plot.plot(susceptibility)
-# plt.xlabel('Temperature $T/J$')
-# plt.ylabel('Susceptibility $\chi J$')
-# plt.ylim(0,0.22)
-# plt.title('Quantum Heisenberg chain')
-# plt.show()

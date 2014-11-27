@@ -13,11 +13,6 @@ from xml.dom import minidom
 
 from xml.etree import ElementTree
 
-f = 1
-Nx = 2
-Ny = 2
-
-
 
 class DilutedSquare:
   def __init__(self, **kwargs):
