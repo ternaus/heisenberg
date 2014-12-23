@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from __future__ import division
 import argparse
 
@@ -22,6 +23,7 @@ f - dilution.
 import pyalps
 import sys
 import os
+import src.common.data2xml
 
 parser = argparse.ArgumentParser()
 
@@ -64,7 +66,17 @@ res = pyalps.runApplication('fulldiag',input_file)
 #load all measurements for all states
 # data = pyalps.loadEigenstateMeasurements(pyalps.getResultFiles(prefix='parm1a'))
 result_name = 'nx{nx}_ny{ny}_J{J}_f{f}'.format(nx=nx, ny=ny, J=J, f=f)
-data = pyalps.evaluateFulldiagVersusT(pyalps.getResultFiles(prefix='parm1a'),DELTA_T=0.1, T_MIN=0.1, T_MAX=10.0)
+data = pyalps.evaluateFulldiagVersusT(pyalps.getResultFiles(prefix='parm1a'),DELTA_T=args.Ts, T_MIN=args.Ti, T_MAX=args.Tf)
 
 print data
 
+d_xml = data2xml.DataToXML(data=data)
+results = 'results'
+
+try:
+  os.mkdir(results)
+except:
+  pass
+
+file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
+d_xml.tofile(file_name)

@@ -61,13 +61,13 @@
     <PARAMETER name="J" default="0"/>
     <PARAMETER name="Jz" default="J"/>
     <PARAMETER name="Jxy" default="J"/>
-    -Jz * Sz(i)*Sz(j) - Jxy*exchange_xy(i,j)
+    Jz * Sz(i)*Sz(j) + Jxy*exchange_xy(i,j)
   </BONDTERM>
   <BONDTERM source="i" target="j" type="1">    
     <PARAMETER name="J'" default="J1"/>
     <PARAMETER name="Jz'" default="J'"/>
     <PARAMETER name="Jxy'" default="J'"/>
-    - Jz' * Sz(i) * Sz(j) - Jxy' * exchange_xy(i,j)
+    Jz' * Sz(i) * Sz(j) + Jxy' * exchange_xy(i,j)
   </BONDTERM>
 
 
