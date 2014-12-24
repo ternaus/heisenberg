@@ -44,10 +44,11 @@ result = []
 
 for item in data_list:
   if args.y_variable == 'energy':
-    plot(item.get_energy()[0], item.get_energy()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()))
+    plot(item.get_energy()[0], item.get_energy()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()), linewidth=2)
   elif args.y_variable == "C":
-    plot(item.get_specific_heat()[0], item.get_specific_heat()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()))
+    plot(item.get_specific_heat()[0], item.get_specific_heat()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()), linewidth=2)
 
+grid(True)
 legend()
 show()
 #

@@ -12,6 +12,7 @@ import os
 # from src import DilutedLattice
 sys.path += [os.path.join(os.getcwd(), '..', '..')]
 sys.path += [os.path.join(os.getcwd(), '..')]
+sys.path += [os.path.join(os.getcwd(), '..', 'utils')]
 
 import DilutedLattice
 import data2xml
@@ -42,16 +43,30 @@ timestamp = str(time.time()).replace(".", "")
 #Save lattice to file
 ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
 
+temp = "temp"
+try:
+  os.mkdir(temp)
+except:
+  pass
+
+try:
+  os.mkdir(os.path.join(temp, timestamp))
+except:
+  pass
+
 lattice_name = 'lattice_Nx_{Nx}_Ny_{Ny}_dilution_{dilution}_{timestamp}'.format(Nx=Nx, Ny=Ny, dilution=dilution, timestamp=timestamp)
-f = open(lattice_name + ".xml", 'w')
+f = open(os.path.join(temp, lattice_name + ".xml"), 'w')
 print >> f, ds
 f.close()
+
+
+LATTICE_LIBRARY = os.path.join(temp, lattice_name + ".xml")
 
 parms.append(
     {
       'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
-      'LATTICE_LIBRARY' : lattice_name + ".xml",      
-      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", "..", "heisenberg.xml"),      
+      'LATTICE_LIBRARY' : LATTICE_LIBRARY,
+      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", "heisenberg.xml"),
       'MODEL'          : "heisenberg",
       'local_S'        : 0.5,
       'T'              : 1 / beta,
@@ -65,16 +80,6 @@ parms.append(
 )
 
 #write the input file and run the simulation
-temp = "temp"
-try:
-  os.mkdir(temp)
-except:
-  pass
-
-try:
-  os.mkdir(os.path.join(temp, timestamp))
-except:
-  pass
 
 input_file = pyalps.writeInputFiles(os.path.join(os.getcwd(), temp, timestamp, lattice_name), parms)
 # input_file = pyalps.writeInputFiles(lattice_name, parms)
@@ -84,8 +89,6 @@ pyalps.runApplication('loop', input_file, writexml=True)
 #load the susceptibility and collect it as function of temperature T
 data = pyalps.loadMeasurements(pyalps.getResultFiles(prefix=lattice_name))
 
-print "data = ", data
-d_xml = data2xml.DataToXML(data=data)
 results = 'results'
 
 try:
@@ -94,5 +97,9 @@ except:
   pass
 
 file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
+
+d_xml = data2xml.DataToXML(data=data, looper=True)
+
+
 d_xml.tofile(file_name)
 

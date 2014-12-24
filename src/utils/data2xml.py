@@ -17,9 +17,10 @@ class DataToXML:
       for item in self.data[0]:
         ElementTree.SubElement(self.result, item.props["observable"].replace(" ", "_").replace("^", "_X"), attrib={"value": str(item.y[0].mean), 'error': str(item.y[0].error)})
 
-
       for key, value in self.data[0][0].props.iteritems():
         ElementTree.SubElement(self.result, key , attrib={"value": str(value)})
+    else:
+      raise Exception('algorithm is not defined')
 
 
   def __str__(self):
@@ -27,12 +28,11 @@ class DataToXML:
 
 
   def pretty(self):
-    print
     a = ElementTree.tostring(self.result).replace("^", "**").replace("|", "").replace("&", "")
     reparsed = minidom.parseString(a)
     return reparsed.toprettyxml(indent="  ")
 
   def tofile(self, file_name):
     f = open(file_name, "w")
-    print >> f,self.pretty()
+    print >> f, self.pretty()
     f.close()
