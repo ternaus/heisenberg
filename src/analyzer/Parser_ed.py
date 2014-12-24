@@ -15,6 +15,7 @@ class Parser_ed:
     self.fName = kwargs['fName']
 
     self.energy = None #total energy
+    self.C = None #specific heat
     self.J = None # Coupling in the plane
     self.T = None # temperature
     self.num_sites = None #number of sites
@@ -32,7 +33,6 @@ class Parser_ed:
       self.ny = int(re.search('(?<=Ny_)\d+', self.fName).group(0))
     return self.ny
 
-
   def get_num_sites(self):
     if self.num_sites == None:
       self.num_sites = self.root.find("Number_of_Sites")
@@ -44,6 +44,12 @@ class Parser_ed:
       self.energy = self.root.find("Energy_Density")
       self.energy = eval(self.energy.attrib['t_list']), eval(self.energy.attrib['y_list'])
     return self.energy
+
+  def get_specific_heat(self):
+    if self.C == None:
+      self.C = self.root.find("Specific_Heat_per_Site")
+      self.C = eval(self.C.attrib['t_list']), eval(self.C.attrib['y_list'])
+    return self.C
 
   def get_J(self):
     if self.J == None:

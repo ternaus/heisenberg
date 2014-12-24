@@ -26,15 +26,13 @@ parser.add_argument('-m', type=str, default = "heisenberg", help="name of the mo
 
 parser.add_argument('-y_variable', type=str, help="""variable along y axis
 energy - total energy
+C - specific heat
 """)
 args = parser.parse_args(sys.argv[1:])
 
 execfile('settings.py')
 
 path = os.path.join(folder_with_different_models, args.m)
-
-print path
-print os.listdir(path)
 
 data_list = (Parser_ed.Parser_ed(data_file=os.path.join(path, item), fName=item) for item in os.listdir(path))
 
@@ -45,8 +43,10 @@ data_list = (Parser_ed.Parser_ed(data_file=os.path.join(path, item), fName=item)
 result = []
 
 for item in data_list:
-  print item.get_energy()
-  plot(item.get_energy()[0], item.get_energy()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()))
+  if args.y_variable == 'energy':
+    plot(item.get_energy()[0], item.get_energy()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()))
+  elif args.y_variable == "C":
+    plot(item.get_specific_heat()[0], item.get_specific_heat()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()))
 
 legend()
 show()
