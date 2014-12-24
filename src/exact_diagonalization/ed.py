@@ -77,10 +77,19 @@ f = open(os.path.join(temp, lattice_name + ".xml"), 'w')
 print >> f, ds
 f.close()
 
+if dilution != 0 :
+  LATTICE = "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution)
+  LATTICE_LIBRARY = os.path.join(temp, lattice_name + ".xml")
+  translation_symmetry = False
+elif dilution == 0:
+  LATTICE = 'square lattice'
+  LATTICE_LIBRARY = os.path.join('..', "lattices.xml")
+  translation_symmetry = True
+
 #prepare the input parameters
 parms = [{
-          'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
-          'LATTICE_LIBRARY' : os.path.join(temp, lattice_name + ".xml"),
+          'LATTICE'        : LATTICE,
+          'LATTICE_LIBRARY' : LATTICE_LIBRARY,
           'MODEL'          : "heisenberg",
           'MODEL_LIBRARY'                     : os.path.join(os.getcwd(), "..", "heisenberg.xml"),
           'local_S'                   : 1/2,
@@ -93,7 +102,7 @@ parms = [{
           'MEASURE_CORRELATIONS[Diagonal spin correlations]='   : 'Sz',
           'MEASURE_CORRELATIONS[Offdiagonal spin correlations]' : 'Splus:Sminus',
           'MEASURE_CORRELATIONS[SzSz]' : 'Sz:Sz',
-          # 'TRANSLATION_SYMMETRY' : True,
+          'TRANSLATION_SYMMETRY' : translation_symmetry,
           'MEASURE_ENERGY' : True,
         }]
 
