@@ -10,9 +10,14 @@ import pyalps.plot
 import sys
 import os
 # from src import DilutedLattice
+
+
 sys.path += [os.path.join(os.getcwd(), '..', '..')]
 sys.path += [os.path.join(os.getcwd(), '..')]
 sys.path += [os.path.join(os.getcwd(), '..', 'utils')]
+sys.path += [os.path.join(os.getcwd(), '..','..', 'utils')]
+
+
 
 import DilutedLattice
 import data2xml
@@ -66,7 +71,7 @@ parms.append(
     {
       'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
       'LATTICE_LIBRARY' : LATTICE_LIBRARY,
-      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", "heisenberg.xml"),
+      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", '..', "heisenberg.xml"),
       'MODEL'          : "heisenberg",
       'local_S'        : 0.5,
       'T'              : 1 / beta,

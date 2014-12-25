@@ -2,6 +2,7 @@ from __future__ import division
 __author__ = 'vladimir'
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
+import re
 
 class Parser:
   '''
@@ -13,15 +14,37 @@ class Parser:
     self.root = self.data.getroot()
 
     self.energy = None #total energy
+    self.C = None #specific heat
     self.J = None # Coupling in the plane
     self.T = None # temperature
     self.num_sites = None #number of sites
+    self.nx = None #number of sites in x direction
+    self.ny = None #number of sites in y direction
 
   def get_num_sites(self):
     if self.num_sites == None:
       self.num_sites = self.root.find("Number_of_Sites")
       self.num_sites = int(float(self.num_sites.attrib["value"]))
     return self.num_sites
+
+  def get_nx(self):
+    if self.nx == None:
+      self.nx = self.root.find("LATTICE_LIBRARY")
+      self.nx = int(re.search('(?<=Nx_)\d+', self.nx.attrib["value"]).group(0))
+    return self.nx
+
+  def get_ny(self):
+    if self.ny == None:
+      self.ny = self.root.find("LATTICE_LIBRARY")
+      self.ny = int(re.search('(?<=Ny_)\d+', self.ny.attrib["value"]).group(0))
+    return self.ny
+
+
+  def get_C(self):
+    if self.C == None:
+      self.C = self.root.find("Specific_Heat")
+      self.C = float(self.C.attrib["value"]), float(self.C.attrib["error"])
+    return self.C
 
   def get_energy(self):
     if self.energy == None:

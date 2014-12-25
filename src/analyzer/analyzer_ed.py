@@ -39,14 +39,25 @@ data_list = (Parser_ed.Parser_ed(data_file=os.path.join(path, item), fName=item)
 #filter J
 # data_list = (item for item in data_list if (item.get_J() == args.J))
 
+#filter nx
+data_list = (item for item in data_list if (item.get_nx() == args.nx))
+
+#filter ny
+data_list = (item for item in data_list if (item.get_ny() == args.ny))
 
 result = []
 
 for item in data_list:
   if args.y_variable == 'energy':
-    plot(item.get_energy()[0], item.get_energy()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()), linewidth=2)
+    x_list = item.get_energy()[0]
+    y_list = item.get_energy()[1]
   elif args.y_variable == "C":
-    plot(item.get_specific_heat()[0], item.get_specific_heat()[1], label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()), linewidth=2)
+    x_list = item.get_specific_heat()[0]
+    y_list = item.get_specific_heat()[1]
+
+  print 'x_list = ', x_list
+  print 'y_list = ', y_list
+  plot(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=item.get_nx(), ny=item.get_ny()), linewidth=2)
 
 grid(True)
 legend()
