@@ -20,6 +20,7 @@ class Parser:
     self.num_sites = None #number of sites
     self.nx = None #number of sites in x direction
     self.ny = None #number of sites in y direction
+    self.beta= None
 
   def get_num_sites(self):
     if self.num_sites == None:
@@ -29,14 +30,13 @@ class Parser:
 
   def get_nx(self):
     if self.nx == None:
-      self.nx = self.root.find("LATTICE_LIBRARY")
-      self.nx = int(re.search('(?<=Nx_)\d+', self.nx.attrib["value"]).group(0))
+      self.nx = int(re.search('(?<=Nx_)\d+', self.data_file).group(0))
+
     return self.nx
 
   def get_ny(self):
     if self.ny == None:
-      self.ny = self.root.find("LATTICE_LIBRARY")
-      self.ny = int(re.search('(?<=Ny_)\d+', self.ny.attrib["value"]).group(0))
+      self.ny = int(re.search('(?<=Ny_)\d+', self.data_file).group(0))
     return self.ny
 
 
@@ -61,3 +61,8 @@ class Parser:
     if self.T == None:
       self.T = float(self.root.find("T").attrib["value"])
     return  self.T
+
+  def get_beta(self):
+    if self.beta == None:
+      self.beta = float(self.root.find("Inverese_Temperature").attrib["value"])
+    return self.beta

@@ -13,8 +13,7 @@ This script is used to plot data that is generated for the heisenberg model
 import argparse
 parser = argparse.ArgumentParser()
 
-# parser.add_argument('-nx', type=int, help="number of sites in x direction")
-# parser.add_argument('-ny', type=int, help="number of sites in y direction")
+
 parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
 # parser.add_argument('-beta', type=float, help="inverse temperature")
 parser.add_argument('-J', type=float, default = 1, help="coupling strength")
@@ -30,6 +29,11 @@ parser.add_argument('-y_variable', type=str, help="""variable along y axis
 energy - total energy
 """)
 args = parser.parse_args(sys.argv[1:])
+
+y_variable_list = ['energy']
+
+if args.y_variable not in y_variable_list:
+  raise Exception("y_variable = {y_variable} should be in y_variable list = {y_list}".format(y_variable=args.y_variable, y_list=y_variable_list))
 
 execfile('settings.py')
 
