@@ -16,11 +16,18 @@ class Parser:
     self.energy = None #total energy
     self.C = None #specific heat
     self.J = None # Coupling in the plane
+    self.J1 = None
     self.T = None # temperature
     self.num_sites = None #number of sites
     self.nx = None #number of sites in x direction
     self.ny = None #number of sites in y direction
-    self.beta= None
+    self.beta= None #inverse temperature
+    self.dilution = None #dilution 1 - PAM, 0 - square
+    self.binder_staggered = None #BInder cumulant of the staggered magnetization
+    self.staggered_magnetization_x2 = None
+    self.staggered_magnetization_x4 = None
+
+
 
   def get_num_sites(self):
     if self.num_sites == None:
@@ -31,7 +38,6 @@ class Parser:
   def get_nx(self):
     if self.nx == None:
       self.nx = int(re.search('(?<=Nx_)\d+', self.data_file).group(0))
-
     return self.nx
 
   def get_ny(self):
@@ -39,12 +45,23 @@ class Parser:
       self.ny = int(re.search('(?<=Ny_)\d+', self.data_file).group(0))
     return self.ny
 
+  def get_dilution(self):
+    if self.dilution == None:
+      self.dilution = float(re.search('(?<=dilution_)\d+.\d+', self.data_file).group(0))
+    return self.dilution
 
   def get_C(self):
     if self.C == None:
       self.C = self.root.find("Specific_Heat")
       self.C = float(self.C.attrib["value"]), float(self.C.attrib["error"])
     return self.C
+
+  def get_binder_staggered(self):
+    if self.binder_staggered == None:
+      self.binder_staggered = self.root.find("Binder_Ratio_of_Staggered_Magnetization")
+      self.binder_staggered = float(self.binder_staggered.attrib["value"]), float(self.binder_staggered.attrib["error"])
+    return self.binder_staggered
+
 
   def get_energy(self):
     if self.energy == None:
@@ -57,6 +74,12 @@ class Parser:
       self.J = float(self.root.find("J").attrib["value"])
     return self.J
 
+  def get_J1(self):
+    if self.J1 == None:
+      self.J1 = float(self.root.find("J1").attrib["value"])
+    return self.J1
+
+
   def get_T(self):
     if self.T == None:
       self.T = float(self.root.find("T").attrib["value"])
@@ -64,5 +87,5 @@ class Parser:
 
   def get_beta(self):
     if self.beta == None:
-      self.beta = float(self.root.find("Inverese_Temperature").attrib["value"])
+      self.beta = float(self.root.find("Inverse_Temperature").attrib["value"])
     return self.beta
