@@ -87,7 +87,6 @@ parms.append(
 #write the input file and run the simulation
 
 input_file = pyalps.writeInputFiles(os.path.join(os.getcwd(), temp, timestamp, lattice_name), parms)
-# input_file = pyalps.writeInputFiles(lattice_name, parms)
 
 pyalps.runApplication('loop', input_file, writexml=True)
 
@@ -104,7 +103,6 @@ except:
 file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
 
 d_xml = data2xml.DataToXML(data=data, looper=True)
-
 
 d_xml.tofile(file_name)
 

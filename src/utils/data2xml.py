@@ -28,7 +28,7 @@ class DataToXML:
 
 
   def pretty(self):
-    a = ElementTree.tostring(self.result).replace("^", "**").replace("|", "").replace("&", "")
+    a = ElementTree.tostring(self.result).replace("^", "**").replace("|", "").replace("&", "").replace("MEASURE[Winding Number]", "MEASURE_Winding_Number")
     reparsed = minidom.parseString(a)
     return reparsed.toprettyxml(indent="  ")
 
