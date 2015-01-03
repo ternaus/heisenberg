@@ -79,8 +79,8 @@ parms.append(
       'J1'             : J1,
       'THERMALIZATION' : 5000,
       'SWEEPS'         : 50000,
-      # 'L'              : 60,
-      'ALGORITHM'      : "loop"
+      'ALGORITHM'      : "loop",
+      'MEASURE[Winding Number]': 1,
     }
 )
 
