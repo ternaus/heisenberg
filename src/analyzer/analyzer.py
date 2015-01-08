@@ -94,6 +94,8 @@ elif args.x_variable == 'J1':
 
   #This is list over spearate nx, ny, but beta can be the same, so I need to divide with respect to J1
   for (nx, ny) in nx_ny_list:
+    print "nx = ", nx
+    print 'ny = ', ny
     J1_dict = {}
     for item in nx_ny_list[(nx, ny)]:
       if item.get_J1() not in J1_dict:
@@ -111,9 +113,8 @@ elif args.x_variable == 'J1':
         result += [(J1, numpy.mean([tx.get_C()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_C()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
       elif args.y_variable == 'binder_staggered':
         ylabel("$Binder$")
-        result += [(J1, numpy.mean([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_binder_staggered()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
+        result += [(J1, numpy.mean([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]), numpy.std([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]))]
 
-    print result
     result.sort()
 
     x_list = [item[0] for item in result]
