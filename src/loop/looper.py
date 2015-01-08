@@ -22,24 +22,32 @@ import data2xml
 
 parms = []
 
+try:
+  import argparse
+except:
+  Nx = int(sys.argv[sys.argv.index("-nx") + 1])
+  Ny = int(sys.argv[sys.argv.index("-ny") + 1])
+  dilution = float(sys.argv[sys.argv.index("-dilution") + 1])
+  beta = float(sys.argv[sys.argv.index("-beta") + 1])
+  J = float(sys.argv[sys.argv.index("-J") + 1])
+  J1 = float(sys.argv[sys.argv.index("-J1") + 1])
+else:
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-nx', type=int, help="number of sites in x direction")
+  parser.add_argument('-ny', type=int, help="number of sites in y direction")
+  parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
+  parser.add_argument('-beta', type=float, help="inverse temperature")
+  parser.add_argument('-J', type=float, default = 1, help="coupling strength")
+  parser.add_argument('-J1', type=float, default = 1, help="coupling in the z direction")
 
-import argparse
-parser = argparse.ArgumentParser()
-parser.add_argument('-nx', type=int, help="number of sites in x direction")
-parser.add_argument('-ny', type=int, help="number of sites in y direction")
-parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
-parser.add_argument('-beta', type=float, help="inverse temperature")
-parser.add_argument('-J', type=float, default = 1, help="coupling strength")
-parser.add_argument('-J1', type=float, default = 1, help="coupling in the z direction")
+  args = parser.parse_args(sys.argv[1:])
 
-args = parser.parse_args(sys.argv[1:])
-
-Nx = args.nx
-Ny = args.ny
-dilution = args.dilution
-J = args.J
-J1 = args.J1
-beta = args.beta
+  Nx = args.nx
+  Ny = args.ny
+  dilution = args.dilution
+  J = args.J
+  J1 = args.J1
+  beta = args.beta
 
 timestamp = str(time.time()).replace(".", "")
 
