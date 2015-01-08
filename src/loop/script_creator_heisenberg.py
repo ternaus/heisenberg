@@ -50,7 +50,9 @@ source /home/viglovik/intel/bin/compilervars.sh intel64
           print >> resultFile, jobScript.lstrip()
           resultFile.close()
 
-
-          print >> scriptFile, "{jobFile}".format(jobFile=jobFile)
+          if '-home' in sys.argv:
+            print >> scriptFile, "{jobFile}".format(jobFile=jobFile)
+          elif '-cluster' in sys.argv:
+            print >> scriptFile, "qsub {jobFile}".format(jobFile=jobFile)
 scriptFile.close()
 
