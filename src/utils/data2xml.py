@@ -73,7 +73,8 @@ def lattice2vertices(lattice):
   result = {}
   data = ElementTree.parse(lattice)
   root = data.getroot()
-  for vertex in root.iter("VERTEX"):
+  graph = root.find("GRAPH")
+  for vertex in graph.findall("VERTEX"):
     id = int(vertex.attrib["id"])
     tp = int(vertex.attrib["type"])
     coordinates = vertex.find("COORDINATE").text
