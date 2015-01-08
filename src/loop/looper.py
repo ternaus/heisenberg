@@ -3,8 +3,6 @@ from __future__ import division
 
 import time
 import pyalps
-import matplotlib.pyplot as plt
-import pyalps.plot
 
 #prepare the input parameters
 import sys

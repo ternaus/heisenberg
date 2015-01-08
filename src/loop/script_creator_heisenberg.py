@@ -41,7 +41,7 @@ for J in j_list:
 #$ -S /bin/bash
 #$ -cwd
 #$ -pe orte 1
-#$cd $CGE_O_WORKER
+#cd $SGE_O_WORKER
 source /home/viglovik/intel/bin/compilervars.sh intel64
 /usr/bin/time -v {path}/looper.py -J {J} -J1 {J1} -beta {beta} -nx {nx} -ny {ny} -dilution {dilution} > {timestamp}.log
         '''.format(J=J, J1=J1, beta=beta, nx=nx, ny=ny, dilution=dilution, path=os.getcwd(), timestamp=timestamp)
