@@ -80,7 +80,9 @@ parms.append(
       'THERMALIZATION' : 5000,
       'SWEEPS'         : 50000,
       'ALGORITHM'      : "loop",
-      'MEASURE[Winding Number]': 1,
+      # 'MEASURE[Winding Number]': 1,
+      'MEASURE_CORRELATIONS[Diagonal spin correlations]':"Sz",
+      # 'MEASURE_CORRELATIONS[Offdiagonal spin correlations]':"Splus:Sminus",
     }
 )
 
@@ -90,7 +92,6 @@ input_file = pyalps.writeInputFiles(os.path.join(os.getcwd(), temp, timestamp, l
 
 pyalps.runApplication('loop', input_file, writexml=True)
 
-#load the susceptibility and collect it as function of temperature T
 data = pyalps.loadMeasurements(pyalps.getResultFiles(prefix=lattice_name))
 
 results = 'results'

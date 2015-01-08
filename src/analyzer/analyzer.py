@@ -9,7 +9,7 @@ __author__ = 'vladimir'
 '''
 This script is used to plot data that is generated for the heisenberg model
 '''
-
+import numpy
 import argparse
 parser = argparse.ArgumentParser()
 
@@ -92,19 +92,28 @@ elif args.x_variable == 'J1':
     else:
       nx_ny_list[(nx, ny)] += [item]
 
+  #This is list over spearate nx, ny, but beta can be the same, so I need to divide with respect to J1
   for (nx, ny) in nx_ny_list:
-    result = []
+    J1_dict = {}
     for item in nx_ny_list[(nx, ny)]:
+      if item.get_J1() not in J1_dict:
+        J1_dict[item.get_J1()] = [item]
+      else:
+        J1_dict[item.get_J1()] += [item]
+
+    result = []
+    for J1 in J1_dict:
       if args.y_variable == "energy":
         ylabel("energy")
-        result += [(item.get_J1(), item.get_energy()[0], item.get_energy()[1])]
+        result += [(J1, numpy.mean([tx.get_energy()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_energy()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
       elif args.y_variable == 'C':
         ylabel("$C$")
-        result += [(item.get_J1(), item.get_C()[0], item.get_C()[1])]
+        result += [(J1, numpy.mean([tx.get_C()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_C()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
       elif args.y_variable == 'binder_staggered':
         ylabel("$Binder$")
-        result += [(item.get_J1(), item.get_binder_staggered()[0], item.get_binder_staggered()[1])]
+        result += [(J1, numpy.mean([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_binder_staggered()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
 
+    print result
     result.sort()
 
     x_list = [item[0] for item in result]
@@ -114,7 +123,7 @@ elif args.x_variable == 'J1':
     print 'x_list = ', x_list
     print 'y_list = ', y_list
     print 'y_err = ',   y_err
-    errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny))
+    errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
 
 legend()
 show()
