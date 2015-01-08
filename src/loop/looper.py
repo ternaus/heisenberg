@@ -82,7 +82,6 @@ parms.append(
       'ALGORITHM'      : "loop",
       # 'MEASURE[Winding Number]': 1,
       'MEASURE_CORRELATIONS[Diagonal spin correlations]':"Sz",
-      # 'MEASURE_CORRELATIONS[Offdiagonal spin correlations]':"Splus:Sminus",
     }
 )
 
@@ -103,7 +102,7 @@ except:
 
 file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
 
-d_xml = data2xml.DataToXML(data=data, looper=True)
+d_xml = data2xml.DataToXML(data=data, looper=True, lattice=LATTICE_LIBRARY)
 
 d_xml.tofile(file_name)
 
