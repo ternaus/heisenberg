@@ -29,7 +29,7 @@ class DataToXML:
       for key, value in self.data[0][0].props.iteritems():
         ElementTree.SubElement(self.result, key , attrib={"value": str(value)})
 
-      ElementTree.SubElement(self.result, "vertices", attrib={"value": str(lattice2vertices(self.lattice))})
+      # ElementTree.SubElement(self.result, "vertices", attrib={"value": str(lattice2vertices(self.lattice))})
     else:
       raise Exception('algorithm is not defined')
 

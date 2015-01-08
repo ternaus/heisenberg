@@ -87,7 +87,7 @@ parms.append(
       'SWEEPS'         : 50000,
       'ALGORITHM'      : "loop",
       # 'MEASURE[Winding Number]': 1,
-      'MEASURE_CORRELATIONS[Diagonal spin correlations]':"Sz",
+      # 'MEASURE_CORRELATIONS[Diagonal spin correlations]':"Sz",
     }
 )
 
