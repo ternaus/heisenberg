@@ -125,7 +125,12 @@ class DilutedSquare:
 
     if self.dilution != 0:
       extra_vertices = list(extra_vertices)
-      assert len(extra_vertices) == self.dilution * self.Nx * self.Ny
+      if len(extra_vertices) != self.dilution * self.Nx * self.Ny:
+        print 'extra_vertices = ', extra_vertices
+        print 'dilution = ', self.dilution
+        print 'Nx = ', self.Nx
+        print 'Ny = ', self.Ny
+        raise Exception("Extra_vertices != dilution * Nx * Ny")
 
       for nx, ny in extra_vertices:
           i = self.xy2i(nx, ny, self.Nx)

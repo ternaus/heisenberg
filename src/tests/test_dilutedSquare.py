@@ -59,10 +59,10 @@ class TestDilutedSquare(TestCase):
     self.assertEquals(Nx * Ny * 2, ds.num_edges(0))
     self.assertEquals(7, ds.num_edges(1))
 
-  def test_64x64_dilution3_16(self):
+  def test_64x64_dilution(self):
     Nx = 64
     Ny = 64
-    dilution = 3.0 / (Nx * Ny)
+    dilution = 0.9375
     ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
 
     self.assertEquals(Nx * Ny, ds.num_vertices(0))
