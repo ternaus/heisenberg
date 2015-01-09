@@ -1,3 +1,4 @@
+from __future__ import division
 import random
 
 __author__ = 'vladimir'
@@ -62,6 +63,11 @@ class DilutedSquare:
         traceback.print_exc(file=sys.stdout)
         exit(3)
 
+    #check if num_sites * dilution is integer number.
+
+    if abs(int(self.dilution * self.Nx * self.Ny) - self.dilution * self.Nx * self.Ny) > 1e-10:
+      raise Exception("dilution * Nx * Ny should be integer")
+      exit(0)
 
     self.lattices = ElementTree.Element("LATTICES")
     self.root = ElementTree.SubElement(self.lattices, "GRAPH")
@@ -98,11 +104,32 @@ class DilutedSquare:
     vertex_ind = self.Nx * self.Ny + 1
 
     # edges that stick out of the square lattice
+    # create list of extra sites to add:
+    extra_vertices = set()
+    if self.dilution != 0 and self.dilution != 1:
 
-    for nx in range(self.Nx):
-      for ny in range(self.Ny):
-        i = self.xy2i(nx, ny, self.Nx)
-        if random.random() <= self.dilution:
+      while len(extra_vertices) < min(self.dilution, 1 - self.dilution) * self.Nx * self.Ny:
+        extra_vertices = set()
+        for i in range(int(self.dilution * self.Nx * self.Ny)):
+          nx = random.randint(0, self.Nx - 1)
+          ny = random.randint(0, self.Ny - 1)
+          extra_vertices.add((nx, ny))
+
+    if self.dilution > 0.5:
+      temp_set = set()
+      for nx in range(self.Nx):
+        for ny in range(self.Ny):
+          temp_set.add((nx, ny))
+
+      extra_vertices = temp_set.difference(extra_vertices)
+
+    if self.dilution != 0:
+      extra_vertices = list(extra_vertices)
+      assert len(extra_vertices) == self.dilution * self.Nx * self.Ny
+
+      for nx, ny in extra_vertices:
+          i = self.xy2i(nx, ny, self.Nx)
+
           v = ElementTree.SubElement(self.root, "VERTEX", attrib={"id": str(vertex_ind), 'type': "1"})
           c = ElementTree.SubElement(v, "COORDINATE")
           c.text = "{nx} {ny} {nz}".format(nx=nx, ny=ny, nz=-1)
@@ -111,9 +138,12 @@ class DilutedSquare:
           vertex_ind += 1
           edge_ind += 1
 
-    self.root.set('vertices', str(vertex_ind - 1))
-    self.root.set('edges', str(edge_ind - 1))
-    self.root.set('name', "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=self.Nx, Ny=self.Ny, dilution=self.dilution))
+      self.root.set('vertices', str(vertex_ind - 1))
+      self.root.set('edges', str(edge_ind - 1))
+      self.root.set('name', "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=self.Nx, Ny=self.Ny, dilution=self.dilution))
+
+    if (vertex_ind - 1 != (1 + self.dilution) * self.Nx * self.Ny):
+      raise Exception("vertex ind = {vertex_ind}, dilutted * Nx * Ny = {X}".format(vertex_ind=vertex_ind, X=self.dilution * self.Nx * self.Ny))
 
   def __str__(self):
     return ElementTree.tostring(self.lattices)

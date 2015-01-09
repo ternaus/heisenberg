@@ -1,5 +1,5 @@
 from unittest import TestCase
-from src import DilutedLattice
+from src.utils import DilutedLattice
 
 
 __author__ = 'vladimir'
@@ -45,3 +45,29 @@ class TestDilutedSquare(TestCase):
     self.assertEquals(2, ds.xy2i(1, 0, Nx))
     self.assertEquals(3, ds.xy2i(2, 0, Nx))
     self.assertEquals(4, ds.xy2i(0, 1, Nx))
+
+  def test_4x4_dilution7_16(self):
+    Nx = 4
+    Ny = 4
+    dilution = 7.0 / (Nx * Ny)
+    ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
+
+    self.assertEquals(Nx * Ny, ds.num_vertices(0))
+    self.assertEquals(7, ds.num_vertices(1))
+
+    self.assertEquals(Nx * Ny * 2 + 7, ds.num_edges())
+    self.assertEquals(Nx * Ny * 2, ds.num_edges(0))
+    self.assertEquals(7, ds.num_edges(1))
+
+  def test_64x64_dilution3_16(self):
+    Nx = 64
+    Ny = 64
+    dilution = 3.0 / (Nx * Ny)
+    ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
+
+    self.assertEquals(Nx * Ny, ds.num_vertices(0))
+    self.assertEquals(3, ds.num_vertices(1))
+
+    self.assertEquals(Nx * Ny * 2 + 3, ds.num_edges())
+    self.assertEquals(Nx * Ny * 2, ds.num_edges(0))
+    self.assertEquals(3, ds.num_edges(1))

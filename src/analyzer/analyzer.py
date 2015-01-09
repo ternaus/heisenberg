@@ -19,6 +19,7 @@ parser.add_argument('-beta', type=float, help="inverse temperature")
 parser.add_argument('-J', type=float, default = 1, help="coupling strength")
 parser.add_argument('-J1', type=float, help="coupling in the z direction")
 parser.add_argument('-m', type=str, default = "heisenberg", help="name of the model")
+parser.add_argument('-errorbars', type=bool, default = True, help="Do we plot errorbars or not")
 # parser.add_argument('-nx', type=int, help="number of  sites in x direction")
 # parser.add_argument('-ny', type=int, help="number of  sites in y direction")
 parser.add_argument('-x_variable', type=str, help="""variable along x axis
@@ -124,7 +125,12 @@ elif args.x_variable == 'J1':
     print 'x_list = ', x_list
     print 'y_list = ', y_list
     print 'y_err = ',   y_err
-    errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
+    print args.errorbars
+
+    if args.errorbars:
+      errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
+    else:
+      errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
 
 legend()
 show()
