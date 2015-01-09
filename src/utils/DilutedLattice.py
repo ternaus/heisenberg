@@ -110,10 +110,18 @@ class DilutedSquare:
 
       while len(extra_vertices) < min(self.dilution, 1 - self.dilution) * self.Nx * self.Ny:
         extra_vertices = set()
-        for i in range(int(self.dilution * self.Nx * self.Ny)):
+        for i in range(int(min(self.dilution, 1 - self.dilution) * self.Nx * self.Ny)):
           nx = random.randint(0, self.Nx - 1)
           ny = random.randint(0, self.Ny - 1)
           extra_vertices.add((nx, ny))
+
+      if len(extra_vertices) != min(self.dilution, 1 - self.dilution) * self.Nx * self.Ny:
+        print 'len(extra_vertices) = ', len(extra_vertices)
+        print 'dilution = ', self.dilution
+        print 'Nx = ', self.Nx
+        print 'Ny = ', self.Ny
+        raise Exception("Extra_vertices != dilution * Nx * Ny")
+
 
     if self.dilution > 0.5:
       temp_set = set()
