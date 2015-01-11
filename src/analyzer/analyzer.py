@@ -16,16 +16,17 @@ parser = argparse.ArgumentParser()
 
 parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
 parser.add_argument('-beta', type=float, help="inverse temperature")
-parser.add_argument('-J', type=float, default = 1, help="coupling strength")
+parser.add_argument('-J', type=float, default=1, help="coupling strength")
 parser.add_argument('-J1', type=float, help="coupling in the z direction")
 parser.add_argument('-m', type=str, default = "heisenberg", help="name of the model")
-parser.add_argument('-errorbars', type=bool, default = True, help="Do we plot errorbars or not")
-# parser.add_argument('-nx', type=int, help="number of  sites in x direction")
-# parser.add_argument('-ny', type=int, help="number of  sites in y direction")
 parser.add_argument('-x_variable', type=str, help="""variable along x axis
 T - temperature
 J1
 """)
+
+parser.add_argument('--errors', dest='errors', action='store_true', help="Do we plot errorbars or not")
+parser.add_argument('--no-errors', dest='errors', action='store_false')
+parser.set_defaults(errors=True)
 
 parser.add_argument('-y_variable', type=str, help="""variable along y axis
 energy - total energy
@@ -34,6 +35,7 @@ binder_staggered - Binder ratio of the staggered magnetization
 """)
 args = parser.parse_args(sys.argv[1:])
 
+grid(True)
 y_variable_list = ['energy', 'C', 'binder_staggered']
 x_variable_list = ['T', 'beta', 'J1']
 
@@ -122,15 +124,15 @@ elif args.x_variable == 'J1':
     y_list = [item[1] for item in result]
     y_err = [item[2] for item in result]
 
+    print args.errors
     print 'x_list = ', x_list
     print 'y_list = ', y_list
     print 'y_err = ',   y_err
-    print args.errorbars
 
-    if args.errorbars:
-      errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
-    else:
-      errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny, linewidth=2))
+    if args.errors:
+      errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
+    elif not args.errors:
+      errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
 
 legend()
 show()
