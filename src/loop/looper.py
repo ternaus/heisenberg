@@ -17,7 +17,7 @@ import os
 sys.path += [os.path.join(os.getcwd(), '..', '..')]
 sys.path += [os.path.join(os.getcwd(), '..')]
 sys.path += [os.path.join(os.getcwd(), '..', 'utils')]
-sys.path += [os.path.join(os.getcwd(), '..','..', 'utils')]
+sys.path += [os.path.join(os.getcwd(), '..', '..', 'utils')]
 
 
 
@@ -41,8 +41,8 @@ else:
   parser.add_argument('-ny', type=int, help="number of sites in y direction")
   parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 => PAM")
   parser.add_argument('-beta', type=float, help="inverse temperature")
-  parser.add_argument('-J', type=float, default = 1, help="coupling strength")
-  parser.add_argument('-J1', type=float, default = 1, help="coupling in the z direction")
+  parser.add_argument('-J', type=float, default=1, help="coupling strength")
+  parser.add_argument('-J1', type=float, default=1, help="coupling in the z direction")
 
   args = parser.parse_args(sys.argv[1:])
 
@@ -58,6 +58,7 @@ timestamp = str(time.time()).replace(".", "")
 #Save lattice to file
 ds = DilutedLattice.DilutedSquare(Nx=Nx, Ny=Ny, dilution=dilution)
 
+
 temp = "temp"
 try:
   os.mkdir(temp)
@@ -70,6 +71,7 @@ except:
   pass
 
 lattice_name = 'lattice_Nx_{Nx}_Ny_{Ny}_dilution_{dilution}_{timestamp}'.format(Nx=Nx, Ny=Ny, dilution=dilution, timestamp=timestamp)
+
 f = open(os.path.join(temp, lattice_name + ".xml"), 'w')
 print >> f, ds
 f.close()
@@ -80,8 +82,8 @@ LATTICE_LIBRARY = os.path.join(temp, lattice_name + ".xml")
 parms.append(
     {
       'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
-      'LATTICE_LIBRARY' : LATTICE_LIBRARY,
-      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", '..', "heisenberg.xml"),
+      'LATTICE_LIBRARY': LATTICE_LIBRARY,
+      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", "heisenberg.xml"),
       'MODEL'          : "heisenberg",
       'local_S'        : 0.5,
       'T'              : 1 / beta,
@@ -111,7 +113,11 @@ try:
 except:
   pass
 
-file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta, Nx=Nx, Ny=Ny, J=J, J1=J1))
+file_name = os.path.join(results, lattice_name + "_beta_{beta}_Nx_{Nx}_Ny_{Ny}_J_{J}_J1_{J1}.xml".format(beta=beta,
+                                                                                                         Nx=Nx,
+                                                                                                         Ny=Ny,
+                                                                                                         J=J,
+                                                                                                         J1=J1))
 
 d_xml = data2xml.DataToXML(data=data, looper=True, lattice=LATTICE_LIBRARY)
 
