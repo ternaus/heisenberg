@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 from __future__ import division
 
+'''
+Main file for sse algorithm for heisenberg model.
+'''
+
 import time
 import pyalps
 

@@ -45,7 +45,6 @@ if args.y_variable not in y_variable_list:
 if args.x_variable not in x_variable_list:
   raise Exception("x_variable = {x_variable} should be in y_variable list = {x_list}".format(x_variable=args.x_variable, x_list=x_variable_list))
 
-
 execfile('settings.py')
 
 path = os.path.join(folder_with_different_models, args.m)
