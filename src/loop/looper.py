@@ -78,18 +78,20 @@ f.close()
 
 
 LATTICE_LIBRARY = os.path.join(temp, lattice_name + ".xml")
-
+print "!!!!!!!!!!!!!!!!!!!!!!!"
+print "lattice library"
+print LATTICE_LIBRARY
 parms.append(
     {
       'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),
       'LATTICE_LIBRARY': LATTICE_LIBRARY,
-      'MODEL_LIBRARY' : os.path.join(os.getcwd(), "..", "heisenberg.xml"),
+      'MODEL_LIBRARY': os.path.join(os.getcwd(), "..", "heisenberg.xml"),
       'MODEL'          : "heisenberg",
       'local_S'        : 0.5,
       'T'              : 1 / beta,
       'J'              : J,
       'J1'             : J1,
-      'THERMALIZATION' : 5000,
+      'THERMALIZATION': 5000,
       'SWEEPS'         : 50000,
       'ALGORITHM'      : "loop",
       # 'MEASURE[Winding Number]': 1,

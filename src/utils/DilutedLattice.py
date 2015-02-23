@@ -151,9 +151,9 @@ class DilutedSquare:
           vertex_ind += 1
           edge_ind += 1
 
-      self.root.set('vertices', str(vertex_ind - 1))
-      self.root.set('edges', str(edge_ind - 1))
-      self.root.set('name', "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=self.Nx, Ny=self.Ny, dilution=self.dilution))
+    self.root.set('vertices', str(vertex_ind - 1))
+    self.root.set('edges', str(edge_ind - 1))
+    self.root.set('name', "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=self.Nx, Ny=self.Ny, dilution=self.dilution))
 
     if (vertex_ind - 1 != (1 + self.dilution) * self.Nx * self.Ny):
       raise Exception("vertex ind = {vertex_ind}, dilutted * Nx * Ny = {X}".format(vertex_ind=vertex_ind, X=self.dilution * self.Nx * self.Ny))
