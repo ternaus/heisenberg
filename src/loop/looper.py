@@ -78,9 +78,6 @@ f.close()
 
 
 LATTICE_LIBRARY = os.path.join(temp, lattice_name + ".xml")
-print "!!!!!!!!!!!!!!!!!!!!!!!"
-print "lattice library"
-print LATTICE_LIBRARY
 parms.append(
     {
       'LATTICE'        : "diluted {Nx} x {Ny}, dilution = {dilution}".format(Nx=Nx, Ny=Ny, dilution=dilution),

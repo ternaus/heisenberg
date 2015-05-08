@@ -3,7 +3,10 @@ import sys
 import os
 import Parser
 from pylab import *
+import pandas as pd
+import seaborn as sns
 
+sns.set_context(context='poster')
 __author__ = 'vladimir'
 
 '''
@@ -18,7 +21,7 @@ parser.add_argument('-dilution', type=float, help="dilution. f = 0 => 2D, f = 1 
 parser.add_argument('-beta', type=float, help="inverse temperature")
 parser.add_argument('-J', type=float, default=1, help="coupling strength")
 parser.add_argument('-J1', type=float, help="coupling in the z direction")
-parser.add_argument('-m', type=str, default = "heisenberg", help="name of the model")
+parser.add_argument('-m', type=str, default="heisenberg", help="name of the model")
 parser.add_argument('-x_variable', type=str, help="""variable along x axis
 T - temperature
 J1
@@ -105,6 +108,7 @@ elif args.x_variable == 'J1':
       else:
         J1_dict[item.get_J1()] += [item]
 
+
     result = []
     for J1 in J1_dict:
       if args.y_variable == "energy":
@@ -115,7 +119,22 @@ elif args.x_variable == 'J1':
         result += [(J1, numpy.mean([tx.get_C()[0] for tx in J1_dict[J1]]), numpy.sqrt(sum([tx.get_C()[1]**2 for tx in J1_dict[J1]])) / len(J1_dict[J1]))]
       elif args.y_variable == 'binder_staggered':
         ylabel("$Binder$")
-        result += [(J1, numpy.mean([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]), numpy.std([tx.get_binder_staggered()[0] for tx in J1_dict[J1]]))]
+        temp = [tx.get_binder_staggered()[0] for tx in J1_dict[J1]]
+        result += [(J1, numpy.mean(temp), 2 * numpy.std(temp) / math.sqrt(len(temp)))]
+
+
+    temp1 = []
+    for key in J1_dict:
+      for x in J1_dict[key]:
+        temp1 += [[key, x.get_binder_staggered()[0]]]
+    df = pd.DataFrame(temp1)
+
+    df.columns = ['J1', 'binder']
+    df.to_csv('temp{N}_{dilution}.csv'.format(N=nx, dilution=args.dilution), index=False)
+    # sns.regplot('J1', 'binder', df, lowess=True, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), scatter=True)
+
+
+
 
     result.sort()
 
@@ -133,6 +152,7 @@ elif args.x_variable == 'J1':
     elif not args.errors:
       errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
 
+title('dilution = ${x}$'.format(x=(1-args.dilution)))
 legend()
 show()
 
