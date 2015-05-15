@@ -25,6 +25,7 @@ parser.add_argument('-m', type=str, default="heisenberg", help="name of the mode
 parser.add_argument('-x_variable', type=str, help="""variable along x axis
 T - temperature
 J1
+dilution - dilution
 """)
 
 parser.add_argument('--errors', dest='errors', action='store_true', help="Do we plot errorbars or not")
@@ -40,7 +41,7 @@ args = parser.parse_args(sys.argv[1:])
 
 grid(True)
 y_variable_list = ['energy', 'C', 'binder_staggered']
-x_variable_list = ['T', 'beta', 'J1']
+x_variable_list = ['T', 'beta', 'J1', 'dilution']
 
 if args.y_variable not in y_variable_list:
   raise Exception("y_variable = {y_variable} should be in y_variable list = {y_list}".format(y_variable=args.y_variable, y_list=y_variable_list))
@@ -122,20 +123,6 @@ elif args.x_variable == 'J1':
         temp = [tx.get_binder_staggered()[0] for tx in J1_dict[J1]]
         result += [(J1, numpy.mean(temp), 2 * numpy.std(temp) / math.sqrt(len(temp)))]
 
-
-    temp1 = []
-    for key in J1_dict:
-      for x in J1_dict[key]:
-        temp1 += [[key, x.get_binder_staggered()[0]]]
-    df = pd.DataFrame(temp1)
-
-    df.columns = ['J1', 'binder']
-    df.to_csv('temp{N}_{dilution}.csv'.format(N=nx, dilution=args.dilution), index=False)
-    # sns.regplot('J1', 'binder', df, lowess=True, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), scatter=True)
-
-
-
-
     result.sort()
 
     x_list = [item[0] for item in result]
@@ -151,8 +138,72 @@ elif args.x_variable == 'J1':
       errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
     elif not args.errors:
       errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
+    title('dilution = ${x}$'.format(x=(1-args.dilution)))
 
-title('dilution = ${x}$'.format(x=(1-args.dilution)))
+elif args.x_variable == 'dilution':
+  xlabel("dilution")
+  #filter J
+  data_list = (item for item in data_list if (item.get_J() == args.J))
+
+  #filter beta
+  data_list = (item for item in data_list if (item.get_beta() == args.beta))
+
+  #filter J1
+  data_list = (item for item in data_list if (item.get_J1() == args.J1))
+
+  #create nx_ny_list
+
+  for item in data_list:
+    nx = item.get_nx()
+    ny = item.get_ny()
+    if (nx, ny) not in nx_ny_list:
+      nx_ny_list[(nx, ny)] = [item]
+    else:
+      nx_ny_list[(nx, ny)] += [item]
+
+  #This is list over spearate nx, ny, but beta can be the same, so I need to divide with respect to J1
+  for (nx, ny) in nx_ny_list:
+    print "nx = ", nx
+    print 'ny = ', ny
+    dilution_dict = {}
+    for item in nx_ny_list[(nx, ny)]:
+      if item.get_dilution() not in dilution_dict:
+        dilution_dict[item.get_dilution()] = [item]
+      else:
+        dilution_dict[item.get_dilution()] += [item]
+
+
+    result = []
+    for dilution in dilution_dict:
+      if args.y_variable == "energy":
+        ylabel("energy")
+        result += [(dilution, numpy.mean([tx.get_energy()[0] for tx in dilution_dict[dilution]]), numpy.sqrt(sum([tx.get_energy()[1]**2 for tx in dilution_dict[dilution]])) / len(dilution_dict[dilution]))]
+      elif args.y_variable == 'C':
+        ylabel("$C$")
+        result += [(dilution, numpy.mean([tx.get_C()[0] for tx in dilution_dict[dilution]]), numpy.sqrt(sum([tx.get_C()[1]**2 for tx in dilution_dict[dilution]])) / len(dilution_dict[dilution]))]
+      elif args.y_variable == 'binder_staggered':
+        ylabel("$Binder$")
+        temp = [tx.get_binder_staggered()[0] for tx in dilution_dict[dilution]]
+        result += [(dilution, numpy.mean(temp), 2 * numpy.std(temp) / math.sqrt(len(temp)))]
+
+    result.sort()
+
+    x_list = [1 - item[0] for item in result]
+    y_list = [item[1] for item in result]
+    y_err = [item[2] for item in result]
+
+    print args.errors
+    print 'x_list = ', x_list
+    print 'y_list = ', y_list
+    print 'y_err = ',   y_err
+
+    if args.errors:
+      errorbar(x_list, y_list, yerr=y_err, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
+    elif not args.errors:
+      errorbar(x_list, y_list, label=r'${nx} \times {ny}$'.format(nx=nx, ny=ny), linewidth=2)
+    title('${Jp}$'.format(Jp=args.J1))
+
+
 legend()
 show()
 

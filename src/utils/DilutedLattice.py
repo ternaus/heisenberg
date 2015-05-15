@@ -116,7 +116,7 @@ class DilutedSquare:
     extra_vertices = extra_vertices[:int(self.dilution * self.Nx * self.Ny)]
 
     if self.dilution != 0:
-      extra_vertices = list(extra_vertices)
+      # extra_vertices = list(extra_vertices)
       if len(extra_vertices) != self.dilution * self.Nx * self.Ny:
         print 'len(extra_vertices) = ', len(extra_vertices)
         print 'dilution = ', self.dilution
