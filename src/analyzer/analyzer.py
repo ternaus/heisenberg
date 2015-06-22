@@ -83,7 +83,7 @@ elif args.x_variable == 'J1':
   data_list = (item for item in data_list if (item.get_J() == args.J))
 
   #filter beta
-  data_list = (item for item in data_list if (item.get_beta() == args.beta))
+  data_list = (item for item in data_list if (abs(item.get_beta() - args.beta) < 1e-3 ))
 
   #filter dilution
   data_list = (item for item in data_list if (item.get_dilution() == args.dilution))
@@ -146,8 +146,7 @@ elif args.x_variable == 'dilution':
   data_list = (item for item in data_list if (item.get_J() == args.J))
 
   #filter beta
-  data_list = (item for item in data_list if (item.get_beta() == args.beta))
-
+  data_list = (item for item in data_list if (abs(item.get_beta() - args.beta) < 1e-3))
   #filter J1
   data_list = (item for item in data_list if (item.get_J1() == args.J1))
 
